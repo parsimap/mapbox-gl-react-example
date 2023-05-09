@@ -1,4 +1,5 @@
 import mapboxgl from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useRef } from "react";
 
 /**
@@ -7,7 +8,7 @@ import { useEffect, useRef } from "react";
 const SOURCES: { [p: string]: string } = {
   region6_area: "region6_area",
   region6_important_streets: "region6_important_streets",
-  region6_restaurant_points: "region6_restaurant_points",
+  region6_restaurant_points: "region6_restaurant_points"
 };
 
 /**
@@ -18,7 +19,7 @@ async function runSourceQueries(): Promise<Awaited<[string, object][]>> {
   return await Promise.all(
     Object.keys(SOURCES).map(async (id) => [
       id,
-      await (await fetch(`data/${id}.json`)).json(),
+      await (await fetch(`data/${id}.json`)).json()
     ])
   );
 }
@@ -30,7 +31,8 @@ async function runSourceQueries(): Promise<Awaited<[string, object][]>> {
  */
 mapboxgl.setRTLTextPlugin(
   "https://cdn.parsimap.ir/third-party/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js",
-  () => {}
+  () => {
+  }
 );
 
 const App = () => {
@@ -62,11 +64,11 @@ const App = () => {
        * https://account.parsimap.ir/token-registration
        */
       const map = new mapboxgl.Map({
-        container: "map",
+        container: containerRef.current!,
         style:
           "https://api.parsimap.ir/styles/parsimap-streets-v11?key=p19dccd06e7da443a08b2ce846d9dbd0d689a47447",
         center: [51.402, 35.725],
-        zoom: 13,
+        zoom: 13
       });
 
       /**
@@ -88,7 +90,7 @@ const App = () => {
         for (const [id, data] of sourceArrayList) {
           map.addSource(id, {
             type: "geojson",
-            data: data as mapboxgl.GeoJSONSourceRaw["data"],
+            data: data as mapboxgl.GeoJSONSourceRaw["data"]
           });
         }
 
@@ -108,18 +110,24 @@ const App = () => {
           source: SOURCES.region6_area,
           paint: {
             "fill-opacity": 0.5,
-            "fill-color": "#00b3be",
-          },
+            "fill-color": "#00b3be"
+          }
         });
 
+        /**
+         * Area Outline Layer
+         * This layer is belonged to area layer
+         * which is used the same source and just illustration a border outside of area
+         * to specify the area with outside of area to be seen better.
+         */
         map.addLayer({
-          id: "area-",
+          id: "area-outline",
           type: "line",
           source: SOURCES.region6_area,
           paint: {
             "line-width": 2,
-            "line-color": "#00919a",
-          },
+            "line-color": "#00919a"
+          }
         });
 
         /**
@@ -133,8 +141,8 @@ const App = () => {
           source: SOURCES.region6_important_streets,
           paint: {
             "line-width": 4,
-            "line-color": "#3e570a",
-          },
+            "line-color": "#3e570a"
+          }
         });
 
         /**
@@ -149,8 +157,8 @@ const App = () => {
           source: SOURCES.region6_restaurant_points,
           paint: {
             "circle-opacity": 0.5,
-            "circle-color": "#ff1515",
-          },
+            "circle-color": "#ff1515"
+          }
         });
       });
     }
@@ -163,7 +171,7 @@ const App = () => {
       ref={containerRef}
       style={{
         height: "100vh",
-        width: "100vw",
+        width: "100vw"
       }}
     />
   );
