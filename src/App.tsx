@@ -109,8 +109,8 @@ const App = () => {
           type: "fill",
           source: SOURCES.region6_area,
           paint: {
-            "fill-opacity": 0.5,
-            "fill-color": "#00b3be"
+            "fill-opacity": 0.25,
+            "fill-color": "#014a4f"
           }
         });
 
@@ -126,7 +126,7 @@ const App = () => {
           source: SOURCES.region6_area,
           paint: {
             "line-width": 2,
-            "line-color": "#00919a"
+            "line-color": "#003134"
           }
         });
 
