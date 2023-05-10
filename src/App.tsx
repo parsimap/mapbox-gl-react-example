@@ -60,7 +60,7 @@ const App = () => {
        * from parsimap cdn.
        *
        * To properly show the map, there is a need for an access token which the
-       * following link could help you reach a Parsiamp company
+       * following link could help you reach a Parsimap company
        * https://account.parsimap.ir/token-registration
        */
       const map = new mapboxgl.Map({
