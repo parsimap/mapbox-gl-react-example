@@ -66,7 +66,7 @@ const App = () => {
       const map = new mapboxgl.Map({
         container: containerRef.current!,
         style:
-          "https://api.parsimap.ir/styles/parsimap-streets-v11?key=p19dccd06e7da443a08b2ce846d9dbd0d689a47447",
+          "https://api.parsimap.ir/styles/parsimap-streets-v11?key=p1c68d1fa8752c49809f1359a200cd7e48102a4436",
         center: [51.402, 35.725],
         zoom: 13
       });
