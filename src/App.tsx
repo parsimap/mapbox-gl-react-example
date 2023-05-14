@@ -1,6 +1,6 @@
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * A dictionary to better access to source ids.
@@ -8,7 +8,7 @@ import { useEffect, useRef } from "react";
 const SOURCES: { [p: string]: string } = {
   region6_area: "region6_area",
   region6_important_streets: "region6_important_streets",
-  region6_restaurant_points: "region6_restaurant_points"
+  region6_restaurant_points: "region6_restaurant_points",
 };
 
 /**
@@ -19,7 +19,7 @@ async function runSourceQueries(): Promise<Awaited<[string, object][]>> {
   return await Promise.all(
     Object.keys(SOURCES).map(async (id) => [
       id,
-      await (await fetch(`data/${id}.json`)).json()
+      await (await fetch(`data/${id}.json`)).json(),
     ])
   );
 }
@@ -31,13 +31,12 @@ async function runSourceQueries(): Promise<Awaited<[string, object][]>> {
  */
 mapboxgl.setRTLTextPlugin(
   "https://cdn.parsimap.ir/third-party/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js",
-  () => {
-  }
+  () => {}
 );
 
 const App = () => {
+  const [map, setMap] = useState<mapboxgl.Map>();
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<mapboxgl.Map>();
 
   useEffect(() => {
     /**
@@ -68,13 +67,9 @@ const App = () => {
         style:
           "https://api.parsimap.ir/styles/parsimap-streets-v11?key=p1c68d1fa8752c49809f1359a200cd7e48102a4436",
         center: [51.402, 35.725],
-        zoom: 13
+        zoom: 13,
       });
-
-      /**
-       *
-       */
-      mapRef.current = map;
+      setMap(map);
 
       /**
        * Secondly, The `style.load` event of the map is used when there is
@@ -90,7 +85,7 @@ const App = () => {
         for (const [id, data] of sourceArrayList) {
           map.addSource(id, {
             type: "geojson",
-            data: data as mapboxgl.GeoJSONSourceRaw["data"]
+            data: data as mapboxgl.GeoJSONSourceRaw["data"],
           });
         }
 
@@ -110,8 +105,8 @@ const App = () => {
           source: SOURCES.region6_area,
           paint: {
             "fill-opacity": 0.25,
-            "fill-color": "#014a4f"
-          }
+            "fill-color": "#014a4f",
+          },
         });
 
         /**
@@ -126,8 +121,8 @@ const App = () => {
           source: SOURCES.region6_area,
           paint: {
             "line-width": 2,
-            "line-color": "#003134"
-          }
+            "line-color": "#003134",
+          },
         });
 
         /**
@@ -141,8 +136,8 @@ const App = () => {
           source: SOURCES.region6_important_streets,
           paint: {
             "line-width": 4,
-            "line-color": "#3e570a"
-          }
+            "line-color": "#3e570a",
+          },
         });
 
         /**
@@ -156,9 +151,10 @@ const App = () => {
           type: "circle",
           source: SOURCES.region6_restaurant_points,
           paint: {
+            "circle-radius": 10,
             "circle-opacity": 0.5,
-            "circle-color": "#ff1515"
-          }
+            "circle-color": "#ff1515",
+          },
         });
       });
     }
@@ -166,12 +162,28 @@ const App = () => {
     main().then();
   }, []);
 
+  useEffect(() => {
+    if (!map) {
+      return;
+    }
+
+    function handleClick(event: mapboxgl.MapMouseEvent) {
+      console.log(event.lngLat);
+    }
+
+    map.on('click', handleClick);
+
+    return () => {
+      map.off('click', handleClick);
+    }
+  }, [map]);
+
   return (
     <div
       ref={containerRef}
       style={{
         height: "100vh",
-        width: "100vw"
+        width: "100vw",
       }}
     />
   );
